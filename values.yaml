@@ -1,0 +1,20 @@
+ingress:
+  enabled: false
+  customCRD: true
+  className: traefik-ingress
+  annotations:
+    kubernetes.io/ingress.class: traefik-ingress
+    traefik.ingress.kubernetes.io/router.entrypoints: "web, websecure"
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: ingress-traefik-traefikbasicauth@kubernetescrd
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: host.cluster.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local

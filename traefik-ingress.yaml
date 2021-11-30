@@ -1,0 +1,25 @@
+{{- if .Values.ingress.customCRD }}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ template "my-api.name" . }}
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.ingress.className }}
+  labels:
+    app.kubernetes.io/name: {{ template "my-api.name" . }}
+    helm.sh/chart: {{ template "my-api.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  entryPoints:
+    - web
+  routes:
+    {{- range .Values.ingress.hosts }}
+    - match: Host(`{{ .host }}`)
+    {{- end }}
+      kind: Rule
+      services:
+        - name: {{ include "my-api.fullname" . }}
+          kind: Service
+          port: {{ .Values.service.port }}
+{{- end }}
